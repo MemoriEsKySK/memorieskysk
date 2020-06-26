@@ -5,9 +5,9 @@
   <subtitle>MemoriEsKySK</subtitle>
   <link href="/atom.xml" rel="self"/>
   
-  <link href="https://godweiyang.com/"/>
+  <link href="https://memorieskysk.com/"/>
   <updated>2020-06-26T06:01:31.866Z</updated>
-  <id>https://godweiyang.com/</id>
+  <id>https://memorieskysk.com/</id>
   
   <author>
     <name>孙恺</name>
@@ -18,8 +18,8 @@
   
   <entry>
     <title>article title</title>
-    <link href="https://godweiyang.com/2020/06/26/article-title/"/>
-    <id>https://godweiyang.com/2020/06/26/article-title/</id>
+    <link href="https://memorieskysk.com/2020/06/26/article-title/"/>
+    <id>https://memorieskysk.com/2020/06/26/article-title/</id>
     <published>2020-06-26T05:58:33.000Z</published>
     <updated>2020-06-26T06:01:31.866Z</updated>
     
@@ -40,8 +40,8 @@
   
   <entry>
     <title>十大经典排序算法整理汇总（附代码）</title>
-    <link href="https://godweiyang.com/2020/02/16/sort-algorithms/"/>
-    <id>https://godweiyang.com/2020/02/16/sort-algorithms/</id>
+    <link href="https://memorieskysk.com/2020/02/16/sort-algorithms/"/>
+    <id>https://memorieskysk.com/2020/02/16/sort-algorithms/</id>
     <published>2020-02-16T07:09:23.000Z</published>
     <updated>2020-06-26T05:36:13.160Z</updated>
     
@@ -61,12 +61,12 @@
     
     </summary>
     
-      <category term="编程算法" scheme="https://godweiyang.com/categories/%E7%BC%96%E7%A8%8B%E7%AE%97%E6%B3%95/"/>
+      <category term="编程算法" scheme="https://memorieskysk.com/categories/%E7%BC%96%E7%A8%8B%E7%AE%97%E6%B3%95/"/>
     
     
-      <category term="leetcode" scheme="https://godweiyang.com/tags/leetcode/"/>
+      <category term="leetcode" scheme="https://memorieskysk.com/tags/leetcode/"/>
     
-      <category term="算法" scheme="https://godweiyang.com/tags/%E7%AE%97%E6%B3%95/"/>
+      <category term="算法" scheme="https://memorieskysk.com/tags/%E7%AE%97%E6%B3%95/"/>
     
   </entry>
   
