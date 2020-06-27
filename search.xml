@@ -1,9 +1,77 @@
 <?xml version="1.0" encoding="utf-8"?>
 <search>
   <entry>
+    <title>article title</title>
+    <url>/2020/06/26/article-title/</url>
+    <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="\assets\css\APlayer.min.css"><script src="\assets\js\APlayer.min.js" class="aplayer-secondary-script-marker"></script><h1 id="动态规划之背包问题"><a href="#动态规划之背包问题" class="headerlink" title="动态规划之背包问题"></a>动态规划之背包问题</h1><p>今天就来说一下背包问题吧，就讨论最常说的0-1背包问题。描述:</p>
+<p>给你一个可装载重量为<code>w</code>的背包和<code>N</code>个物品，每个物品有重量和价值两个属性。其中第<code>i</code>个物品的重量为<code>wt[i]</code>，价值为<code>val[i]</code>，现在让你用这个背包装物品，最多能装的价值是多少?</p>
+<p>简单的例子，输入如下：</p>
+<pre><code>N = 3, W = 4
+wt = [2, 1, 3]
+val = [4, 2, 3]</code></pre><p>算法返回6，选择前两件物品装入背包，总重量为3小于<code>W</code>，可以获得最大价值6。</p>
+<p>题目就是这么简单,一个典型的动态规划问题。这个题目中的物品不可以分割，要么装进包里，要么不装，不能说切成两块装一半。这就是0-1背包这个名词的来历。</p>
+<p>解决这个问题没有什么排序之类巧妙的方法，只能穷举所有可能，根据我们「动态规划详解」中的套路，直接走流程就行了。</p>
+<h2 id="动规标准套路"><a href="#动规标准套路" class="headerlink" title="动规标准套路"></a>动规标准套路</h2><h4 id="第一步要明确两点-「状态」和「选择」。"><a href="#第一步要明确两点-「状态」和「选择」。" class="headerlink" title="第一步要明确两点, 「状态」和「选择」。"></a>第一步要明确两点, 「状态」和「选择」。</h4><p>先说状态，如何才能描述一个问题局面？只要给几个物品和一个背包的容量限制，就形成了一个背包问题呀。所以<strong>状态有两个，就是「背包的容量」和「可选择的物品」。</strong></p>
+<p>再说选择，也很容易想到啊，对于每件物品，你能选择什么？<strong>选择就是「装进背包」或者「不装进背包」嘛。</strong></p>
+<p>明白了<strong>状态</strong>和<strong>选择</strong>，动态规划问题基本上就解决了，只要往这个框架套就完事儿了：</p>
+<pre><code>for 状态1 in 状态1的所有取值:
+    for 状态2 in 状态2的所有取值:
+        for ...
+            dp[状态1][状态2][...] = 择优(选择1，选择2，...)</code></pre><h4 id="第二步要明确-dp-数组的定义"><a href="#第二步要明确-dp-数组的定义" class="headerlink" title="第二步要明确 dp 数组的定义"></a>第二步要明确 <code>dp</code> 数组的定义</h4><p>首先看看刚才找到的「状态」，有两个，也就是说我们需要一个二维<code>dp</code>数组。<br><code>dp[i][w]</code>的定义如下：对于前<code>i</code>个物品，当前背包的容量为<code>w</code>，这种情况下可以装的最大价值是<code>dp[i][w]</code>。</p>
+<p>比如说，如果<code>dp[3][5] = 6</code>，其含义为：对于给定的一系列物品中，若只对前3个物品进行选择，当背包容量为5时，最多可以装下的价值为6。</p>
+<p>PS：为什么要这么定义？便于状态转移，或者说这就是套路，记下来就行了。</p>
+<p>根据这个定义，我们想求的最终答案就是<code>dp[N][W]</code>。Base case就是<code>dp[0][..] = dp[...][0] = 0</code>，因为没有物品或者背包没有空间的时候，能装的最大价值就是0。</p>
+<p>细化上面的框架:</p>
+<pre><code>int dp[N+1][W+1]
+dp[0][...] = 0
+dp[...][0] = 0
+
+for i in [1, 2, ..., N]:
+    for w in [1, 2, ..., W]:
+        dp[i][w] = max(
+            把物品 i 装入背包，
+            不把物品 i 装入背包
+        )
+
+return dp[N][W]</code></pre><h4 id="第三步-根据「选择」，思考状态转移的逻辑。"><a href="#第三步-根据「选择」，思考状态转移的逻辑。" class="headerlink" title="第三步,根据「选择」，思考状态转移的逻辑。"></a>第三步,根据「选择」，思考状态转移的逻辑。</h4><p>简单说就是，上面伪码中「把物品i装进背包」和「不把物品i装进背包」怎么用代码体现出来呢?<br>这就要结合对<code>dp</code>数组的定义和我们的算法逻辑来分析了:</p>
+<p>先重申一下刚才我们的dp数组的定义:</p>
+<p>dp[i][w]表示：对于前1个物品，当前背包的容量为<code>w</code>时，这种情况下可以装下的最大价值是<code>dp[i][w]</code>。</p>
+<p><strong>如果你没有把这第<code>i</code>个物品装入背包</strong>，那么很显然，最大价值<code>dp[i][w]</code>应该等于<code>dp[i-1][w]</code> ，继承之前的结果。</p>
+<p><strong>如果你把这第<code>i</code>个物品装入了背包</strong>，那么<code>dp[i][w]</code>应该等于<code>dp[i-1][w - wt[i-1]] + val[i-1]</code>。</p>
+<p>首先，由于<code>i</code>是从1开始的，所以<code>val</code>和<code>wt</code>的索引是<code>i-1</code>时表示第<code>i</code>个物品的价值和重量<br>而<code>dp[i][w - wt[i-1]]</code>也很好理解：你如果装了第<code>i</code>个物品，就要寻求剩余重量<code>w-wt[i-1]</code>限制下的最大价值，加上第<code>i</code>个物品的价值<code>val[i-1]</code>。</p>
+<p>综上就是两种选择，我们都已经分析完毕，也就是写出来了状态转移方程，可以进一步细化代码：</p>
+<pre><code>for i in [1, 2, ..., N]:
+    for w in [1, 2, ..., W]:
+        dp[i][w] = max(
+            dp[i-1][w].
+            dp[i-1][w - wt[i-1]] + val[i-1]
+        )
+return dp[N][W]</code></pre><h4 id="最后一步，把伪码翻译成代码，处理一些边界情况。"><a href="#最后一步，把伪码翻译成代码，处理一些边界情况。" class="headerlink" title="最后一步，把伪码翻译成代码，处理一些边界情况。"></a>最后一步，把伪码翻译成代码，处理一些边界情况。</h4><p>用C++写的代码，把上面的思路完全翻译了一遍，并且处理了<code>w-wt[i-1]</code>可能小于0导致数组索引越界的问题:</p>
+<pre class="line-numbers language-c++"><code class="language-c++">int Knapsack(int W, int N, vector<int> &wt, vector<int> &val) {
+    // base case  已初始化
+    vector<vector<int>> dp(N + 1, vector<int>(W + 1, 0));
+
+    for (int i = 1; i <= N; ++i) {
+        for (int w = 1; w <= W; ++w) {
+            if (w - wt[i - 1] < 0) {
+                // 该情况只能选择不装
+                dp[i][w] = dp[i - 1][w];
+            } else {
+                // 转 or 不装，择优
+                dp[i][w] = max(dp[i - 1][w - wt[i - 1]] + val[i - 1], dp[i - 1][w]);
+            }
+        }
+    }
+
+    return dp[N][W];
+}<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>至此，背包问题就解决了，相比而言，我觉得这是比较简单的动态规划问题，因为状态转移的推导比较自然，基本上你明确了<code>dp</code>数组的定义，就可以理所当然地确定状态转移了。</p>
+]]></content>
+  </entry>
+  <entry>
     <title>十大经典排序算法整理汇总（附代码）</title>
     <url>/2020/02/16/sort-algorithms/</url>
-    <content><![CDATA[<blockquote>
+    <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="\assets\css\APlayer.min.css"><script src="\assets\js\APlayer.min.js" class="aplayer-secondary-script-marker"></script><blockquote>
 <p>关注公众号【算法码上来】，每日算法干货马上就来！</p>
 </blockquote>
 <p><img src="/medias/contact.jpg" alt></p>
@@ -376,73 +444,5 @@
         <tag>leetcode</tag>
         <tag>算法</tag>
       </tags>
-  </entry>
-  <entry>
-    <title>article title</title>
-    <url>/2020/06/26/article-title/</url>
-    <content><![CDATA[<h1 id="动态规划之背包问题"><a href="#动态规划之背包问题" class="headerlink" title="动态规划之背包问题"></a>动态规划之背包问题</h1><p>今天就来说一下背包问题吧，就讨论最常说的0-1背包问题。描述:</p>
-<p>给你一个可装载重量为<code>w</code>的背包和<code>N</code>个物品，每个物品有重量和价值两个属性。其中第<code>i</code>个物品的重量为<code>wt[i]</code>，价值为<code>val[i]</code>，现在让你用这个背包装物品，最多能装的价值是多少?</p>
-<p>简单的例子，输入如下：</p>
-<pre><code>N = 3, W = 4
-wt = [2, 1, 3]
-val = [4, 2, 3]</code></pre><p>算法返回6，选择前两件物品装入背包，总重量为3小于<code>W</code>，可以获得最大价值6。</p>
-<p>题目就是这么简单,一个典型的动态规划问题。这个题目中的物品不可以分割，要么装进包里，要么不装，不能说切成两块装一半。这就是0-1背包这个名词的来历。</p>
-<p>解决这个问题没有什么排序之类巧妙的方法，只能穷举所有可能，根据我们「动态规划详解」中的套路，直接走流程就行了。</p>
-<h2 id="动规标准套路"><a href="#动规标准套路" class="headerlink" title="动规标准套路"></a>动规标准套路</h2><h4 id="第一步要明确两点-「状态」和「选择」。"><a href="#第一步要明确两点-「状态」和「选择」。" class="headerlink" title="第一步要明确两点, 「状态」和「选择」。"></a>第一步要明确两点, 「状态」和「选择」。</h4><p>先说状态，如何才能描述一个问题局面？只要给几个物品和一个背包的容量限制，就形成了一个背包问题呀。所以<strong>状态有两个，就是「背包的容量」和「可选择的物品」。</strong></p>
-<p>再说选择，也很容易想到啊，对于每件物品，你能选择什么？<strong>选择就是「装进背包」或者「不装进背包」嘛。</strong></p>
-<p>明白了<strong>状态</strong>和<strong>选择</strong>，动态规划问题基本上就解决了，只要往这个框架套就完事儿了：</p>
-<pre><code>for 状态1 in 状态1的所有取值:
-    for 状态2 in 状态2的所有取值:
-        for ...
-            dp[状态1][状态2][...] = 择优(选择1，选择2，...)</code></pre><h4 id="第二步要明确-dp-数组的定义"><a href="#第二步要明确-dp-数组的定义" class="headerlink" title="第二步要明确 dp 数组的定义"></a>第二步要明确 <code>dp</code> 数组的定义</h4><p>首先看看刚才找到的「状态」，有两个，也就是说我们需要一个二维<code>dp</code>数组。<br><code>dp[i][w]</code>的定义如下：对于前<code>i</code>个物品，当前背包的容量为<code>w</code>，这种情况下可以装的最大价值是<code>dp[i][w]</code>。</p>
-<p>比如说，如果<code>dp[3][5] = 6</code>，其含义为：对于给定的一系列物品中，若只对前3个物品进行选择，当背包容量为5时，最多可以装下的价值为6。</p>
-<p>PS：为什么要这么定义？便于状态转移，或者说这就是套路，记下来就行了。</p>
-<p>根据这个定义，我们想求的最终答案就是<code>dp[N][W]</code>。Base case就是<code>dp[0][..] = dp[...][0] = 0</code>，因为没有物品或者背包没有空间的时候，能装的最大价值就是0。</p>
-<p>细化上面的框架:</p>
-<pre><code>int dp[N+1][W+1]
-dp[0][...] = 0
-dp[...][0] = 0
-
-for i in [1, 2, ..., N]:
-    for w in [1, 2, ..., W]:
-        dp[i][w] = max(
-            把物品 i 装入背包，
-            不把物品 i 装入背包
-        )
-
-return dp[N][W]</code></pre><h4 id="第三步-根据「选择」，思考状态转移的逻辑。"><a href="#第三步-根据「选择」，思考状态转移的逻辑。" class="headerlink" title="第三步,根据「选择」，思考状态转移的逻辑。"></a>第三步,根据「选择」，思考状态转移的逻辑。</h4><p>简单说就是，上面伪码中「把物品i装进背包」和「不把物品i装进背包」怎么用代码体现出来呢?<br>这就要结合对<code>dp</code>数组的定义和我们的算法逻辑来分析了:</p>
-<p>先重申一下刚才我们的dp数组的定义:</p>
-<p>dp[i][w]表示：对于前1个物品，当前背包的容量为<code>w</code>时，这种情况下可以装下的最大价值是<code>dp[i][w]</code>。</p>
-<p><strong>如果你没有把这第<code>i</code>个物品装入背包</strong>，那么很显然，最大价值<code>dp[i][w]</code>应该等于<code>dp[i-1][w]</code> ，继承之前的结果。</p>
-<p><strong>如果你把这第<code>i</code>个物品装入了背包</strong>，那么<code>dp[i][w]</code>应该等于<code>dp[i-1][w - wt[i-1]] + val[i-1]</code>。</p>
-<p>首先，由于<code>i</code>是从1开始的，所以<code>val</code>和<code>wt</code>的索引是<code>i-1</code>时表示第<code>i</code>个物品的价值和重量<br>而<code>dp[i][w - wt[i-1]]</code>也很好理解：你如果装了第<code>i</code>个物品，就要寻求剩余重量<code>w-wt[i-1]</code>限制下的最大价值，加上第<code>i</code>个物品的价值<code>val[i-1]</code>。</p>
-<p>综上就是两种选择，我们都已经分析完毕，也就是写出来了状态转移方程，可以进一步细化代码：</p>
-<pre><code>for i in [1, 2, ..., N]:
-    for w in [1, 2, ..., W]:
-        dp[i][w] = max(
-            dp[i-1][w].
-            dp[i-1][w - wt[i-1]] + val[i-1]
-        )
-return dp[N][W]</code></pre><h4 id="最后一步，把伪码翻译成代码，处理一些边界情况。"><a href="#最后一步，把伪码翻译成代码，处理一些边界情况。" class="headerlink" title="最后一步，把伪码翻译成代码，处理一些边界情况。"></a>最后一步，把伪码翻译成代码，处理一些边界情况。</h4><p>用C++写的代码，把上面的思路完全翻译了一遍，并且处理了<code>w-wt[i-1]</code>可能小于0导致数组索引越界的问题:</p>
-<pre class="line-numbers language-c++"><code class="language-c++">int Knapsack(int W, int N, vector<int> &wt, vector<int> &val) {
-    // base case  已初始化
-    vector<vector<int>> dp(N + 1, vector<int>(W + 1, 0));
-
-    for (int i = 1; i <= N; ++i) {
-        for (int w = 1; w <= W; ++w) {
-            if (w - wt[i - 1] < 0) {
-                // 该情况只能选择不装
-                dp[i][w] = dp[i - 1][w];
-            } else {
-                // 转 or 不装，择优
-                dp[i][w] = max(dp[i - 1][w - wt[i - 1]] + val[i - 1], dp[i - 1][w]);
-            }
-        }
-    }
-
-    return dp[N][W];
-}<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
-<p>至此，背包问题就解决了，相比而言，我觉得这是比较简单的动态规划问题，因为状态转移的推导比较自然，基本上你明确了<code>dp</code>数组的定义，就可以理所当然地确定状态转移了。</p>
-]]></content>
   </entry>
 </search>
