@@ -2,6 +2,13 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   
   <url>
+    <loc>https://memorieskysk.com/about/index.html</loc>
+    
+    <lastmod>2020-06-27T04:40:30.041Z</lastmod>
+    
+  </url>
+  
+  <url>
     <loc>https://memorieskysk.com/friends/index.html</loc>
     
     <lastmod>2020-06-26T11:54:11.850Z</lastmod>
@@ -12,13 +19,6 @@
     <loc>https://memorieskysk.com/contact/index.html</loc>
     
     <lastmod>2020-06-26T11:53:07.828Z</lastmod>
-    
-  </url>
-  
-  <url>
-    <loc>https://memorieskysk.com/about/index.html</loc>
-    
-    <lastmod>2020-06-26T11:49:26.112Z</lastmod>
     
   </url>
   
